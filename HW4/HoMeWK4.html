@@ -1,0 +1,80 @@
+<!DOCTYPE html >
+<html>
+<head>
+	<title>Homework 4</title>
+</head>
+<body>
+	<h3 style="text-align: center; margin-top: 100px">Enter URL for Container Shipping Companies List JSON File</h3>
+	<div style="text-align: center;margin: 20px;border-radius: 5px;">
+		<input id="input" ></input>
+	</div>
+	<div style="text-align: center;">
+		<button style="background-color: rgb(220,220,220);border-radius: 5px;" onclick="submit()" >Submit Query</button>
+	</div>
+	<script type="text/javascript" enc>
+		function submit(){
+			var filename=document.getElementById("input");
+			if(filename.value==""){
+				alert("please enter filename.");
+			}
+			else{
+				var URL="./"+filename.value;
+				this.URL=URL;
+				var xmlhttp= new XMLHttpRequest();
+				xmlhttp.open("GET",URL,false);
+				xmlhttp.send(); 
+				if(xmlhttp.status==404){ //url不存在   
+					alert(" doesn't exist.");
+				}
+				else{   
+					var json=JSON.parse(xmlhttp.responseText);
+					this.json=json;
+					console.log(json);
+					if(json.Mainline.Table.Row==null){
+						alert("There is no container company listed");
+					}
+					else{
+						newWindow=window.open("HoMeWK4.html");
+						generate();
+						newWindow.document.write(html_text);
+						newWindow.document.close();
+					}
+				}	
+				}
+		}		
+		function generate(){
+			html_text="<html><head><title>Top Container Shipping Companies</title></head><body><table border='2'><tr>"
+			var header=json.Mainline.Table.Header.Data;
+			for(i=0;i<header.length;i++){
+				html_text+="<th>"+header[i]+"</th>";
+			}
+			html_text+="</tr>";
+
+			var content=json.Mainline.Table.Row;
+			var item="";
+			for(i=0;i<content.length;i++){
+				item+="<tr>"+"<td>"+content[i].Company+"</td><td>"+content[i].Ships+"</td>";
+				if(content[i].Hubs.Hub.length==0){
+					item+="<td></td>";
+			}
+				else{
+					item+="<td><ul>";
+					for(j=0;j<content[i].Hubs.Hub.length;j++){
+						if(j==0){
+							item+="<li><b>"+content[i].Hubs.Hub[j]+"</b></li>";
+						}
+						else{
+							item+="<li>"+content[i].Hubs.Hub[j]+"</li>";
+						}
+				}
+				item+="</ul></td>"
+			}
+
+			item+="<td>"+content[i].Market+"</td><td><a href="+content[i].HomePage+">"+content[i].HomePage+"</a></td><td><img width=250px; height=200px; src='"+content[i].Logo+"'></td></tr>"	
+			}	
+			html_text+=item+"</table></body></html>";
+
+		}
+	</script>
+</body>
+</html>

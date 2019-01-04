@@ -1,0 +1,147 @@
+.alertForm{
+  border-color: red;
+}
+.centerDiv{
+
+	text-align: center;
+}
+label{
+  font-weight: bold;
+}
+.searchButton:disable{
+	background: #6CA2F4;
+}
+.unchosenDiv{
+	background: white;
+	color: blue;
+}
+.table td{
+  vertical-align: middle;
+}
+/*.fade.ng-enter {
+  transition:2.5s linear all;
+  /*opacity:0;*/
+/*}*/
+
+/* The finishing CSS styles for the enter animation */
+/*.fade.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+.fade.ng-leave {
+  transition:2.5s linear all;
+  opacity:1;
+}
+.fade.ng-leave.ng-leave-active {
+  opacity:0;
+}*/
+/*.slide-down{
+  animation:2s slide-down normal forwards;
+  background: red;
+}
+@-webkit-keyframes slide-down
+{
+  0%  {top:0;}
+  100%   {top:80%;}
+}
+
+/* Standard syntax */
+/*@keyframes slide-down
+{
+  0%  {top:0;}
+  100%   {top:80%;}
+}*/
+/*.slide-down{
+
+}*/
+.slide-down.ng-enter {
+  transition:1s linear all;
+  overflow-y: hidden;
+     max-height: 0px;
+     /* 最大高度 */
+    /* background: pink;
+     height: 200px;
+     width: 200px;*/
+}
+
+/* The finishing CSS styles for the enter animation */
+.slide-down.ng-enter.ng-enter-active {
+  max-height: 1000px;
+}
+.slide-down.ng-leave {
+  transition:1s linear all;
+  max-height:1000px;
+}
+.slide-down.ng-leave.ng-leave-active {
+  max-height: 0px;
+}
+/*.slide-up{
+  height:0px;
+}*/
+.container.row img{
+  margin: 10px;
+}
+.angular-google-map-container { height: 400px; }
+
+.roundBar{
+  position:relative;
+  top:-35px;
+  left: -4px;
+}
+
+.showDetail.ng-enter{
+  transition:0.5s linear all;
+  transform:translateX(-1000px);
+}
+.showDetail.ng-enter.ng-enter-active{
+  transform: translateX(0);
+}
+.showTable.ng-enter{
+  transition:0.5s linear all;
+  transform:translateX(1000px);
+}
+.showTable.ng-enter.ng-enter-active{
+  transform: translateX(0);
+}
+
+
+#map{
+    height:500px; 
+    width:100%; 
+/*    box-shadow: 3px 3px 10px gray;*/  
+    }
+/*#repeat{ 
+     display: inline;
+     }*/
+.detailHeading{
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+.venueHeading{
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+td.inherit:hover{
+  background: lightgrey !important;
+}
+.searchItem:focus{
+  background: yellow;
+}
+.inherit{
+  background-image: inherit;
+}
+.list-group-item:hover{
+  width: 100%;
+  background: lightgrey;
+  cursor: pointer;
+}
+.list-group{
+  width: 95%;
+  position: absolute;
+  z-index: 100;
+}
+
+

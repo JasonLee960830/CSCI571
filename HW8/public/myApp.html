@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.staticfile.org/angular.js/1.6.9/angular.min.js"></script>
+<!-- material icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="myApp.css">
+<!-- angularmaterial  -->
+  <!-- css -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+
+<!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+
+<!-- round progress -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-svg-round-progressbar/0.4.8/roundProgress.min.js"></script>
+  <!-- googleMap -->
+  <script
+  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyC7tqbcASHS3luuZS5D3rH0sR6owqPtofU&sensor=false&language=en"></script>
+</head>
+
+<body>
+  <div ng-app="myApp" style="width: 90%; margin: auto;" ng-init="getLocation()" ng-controller="formCtrl">
+
+    <div class="card" style="">
+      <h3 class="card-title" style="text-align: center;"> Entertainment  Event Ticket Search</h3>
+      <div class="card-body" style="margin-left:15%;">
+        <form name="cardForm" novalidate>
+          <div class="form-group row">
+            <label for="keyword" class="col-sm-2 col-form-label">Keyword<sup style="color: red">*</sup></label>
+            <div class="col-sm-6">
+              <input type="text" autocomplete="off" name="keyword" ng-model="form.keyword" ng-click="keywordIsActivated()" ng-keyup="autocomplete(form.keyword)" ng-blur="hide()" ng-class="{alertForm:cardForm.keyword.$touched&&!cardForm.keyword.$valid}" class="form-control" id="keyword" placeholder="Enter Artist, Team or Event Name(eg: Lakers)" required>
+              <ul class="list-group" ng-show="initclick">
+                <div class="list-group-item" ng-repeat="data in filterData" ng-click="fillTextbox(data)">{{data.name}}</div>
+              </ul>
+            </div>
+          </div>
+            <div ng-show="cardForm.keyword.$touched&&!cardForm.keyword.$valid">
+              <div class="form-group row">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-6" style="color: red;">Please enter a keyword</div>
+              </div>
+            </div>
+          
+
+          <div class="form-group row">
+
+            <label for="category" class="col-sm-2 col-form-label" style="margin-right:15px;">Category</label>
+
+            <select class="custom-select col-sm-2" ng-model="form.category">
+              <option value="All">All</option>
+              <option value="Music">Music</option>
+              <option value="Sports">Sports</option>
+              <option value="Arts&Theatre">Arts&Theatre</option>
+              <option value="Film">Film</option>
+              <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+          </div>
+
+          <div class="form-group row">
+            <label for="distance" class="col-sm-2 col-form-label">Distance</label>
+            <div class="col-sm-2" style="margin-right:50px;">
+              <input type="text" name="distance" ng-model="form.distance" class="form-control " id="distance" style="width: 100%">  
+            </div>
+            <select class="custom-select col-sm-2" ng-model="form.unit">
+              <option selected value="miles">Miles</option>
+              <option value="km">Kilometers</option>       
+            </select>
+          </div>
+
+          <div class="form-group row">
+            <label for="location" class="col-sm-2 col-form-label">From<sup style="color: red">*</sup></label>
+            <div class="col-sm-4">
+              <div class="custom-control custom-radio">
+                <input type="radio" id="currentLocation" ng-model="form.location" value="currentLocation" name="location" class="custom-control-input">
+                <label class="custom-control-label" for="currentLocation" style="font-weight: normal;">Current Location</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input type="radio" id="otherLocation" name="location" value="otherLocation" ng-model="form.location" class="custom-control-input" ng-class="{alert:form.location!='currentLocation'&&cardForm.specifiedLocation.$touched&&!cardForm.specifiedLocation.$valid}">
+                <label class="custom-control-label" for="otherLocation" style="font-weight: normal;">Other. Please specify:</label>
+              </div>
+              <input type="text" name="specifiedLocation" class="form-control" ng-model="form.specifiedLocation" ng-disabled = "form.location=='currentLocation'" id="specifiedLocation" required>
+            </div>
+          </div>
+          <div ng-show="form.location!='currentLocation'&&cardForm.specifiedLocation.$touched&&!cardForm.specifiedLocation.$valid">
+              <div class="form-group row">
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-6" style="color: red;margin-top: 0px;margin-bottom: 0px;">Please specify a location</div>
+              </div>
+            </div>
+          <div class="form-group row">
+            <button type="button" ng-click="search()" id="searchButton" class="btn btn-primary" ng-disabled="form.keyword ==null||(form.location!='currentLocation'&&form.specifiedLocation==null)">
+              <i class="material-icons">search</i>Search
+            </button>
+            <button type="button" ng-click="reset()" class="btn btn-light">
+              <i class="material-icons">clear_all</i> Clear
+            </button>
+          </div>
+        </form>
+      </div>
+    </div> 
+    <div class="centerDiv">
+          <button type="button" ng-click="showSearchResults()" ng-class="ResultsDiv" class="btn btn-primary">
+             Results
+          </button>
+            <button type="button" ng-click="showCollections()" ng-class="FavoritesDiv" class="btn btn-primary">
+              Favorites
+            </button>
+      </div>
+      <div ng-if="showDetail" class="detailHeading">{{detailHeading}}</div>
+    <div ng-if="showProgressBar&&searchResult!='NORESULT'">
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+      </div>
+    </div>    
+    <div ng-if="showTable&&searchResult!='NORESULT'" ng-show = "!listButton.click||showTable" class="showTable">
+      <!-- detailButton -->
+      <button type="button" ng-disabled="detailInfo==null" ng-click="detailClick()" class="btn light" style="border-color: grey;color:grey;float: right;">
+        <i class="material-icons">chevron_right</i> Details
+      </button>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Event</th>
+            <th scope="col">Category</th>
+            <th scope="col">Venue Info</th>
+            <th scope="col">Favoriate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <tr ng-repeat="item in searchResult" class="searchItem">
+              <td>{{$index+1}}</td>
+              <td>{{item.dates.start.localDate}}</td>
+              <td class="searchItem">
+                <md-content layout-padding="" style="" class="inherit">
+                  <div>
+                    <md-tooltip md-direction="bottom">
+                    {{item.name}}
+                    </md-tooltip>
+                    <div style="cursor: pointer; outline: none;" ng-click="showDetails(item.id,$index,item.name)">{{item.name|textLengthSet:true:35:'...'}}</div>
+                  </div>
+                </md-content>
+              </td>
+              <td>{{item.classifications[0].genre.name}}-{{item.classifications[0].segment.name}}</td>
+              <td>{{item._embedded.venues[0].name}}</td>
+              <td>
+                <div style="border-color: grey" class="searchItem"ß>
+                  <button type="button" ng-click="collect($index)" class="btn light" style="float: right;border:grey;">
+                  <i class="material-icons">{{starStates[$index]}}</i>
+                </button>
+                </div>
+              </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 100px;" ng-if="searchResult=='NORESULT'&&ResultsDiv==''">
+      <div class="alert alert-danger" role="alert">
+          Fail to get search results
+      </div>
+    </div>
+    <div ng-if = "showCollection&&cleanCollection!='NORECORDS'">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Event</th>
+            <th scope="col">Category</th>
+            <th scope="col">Venue Info</th>
+            <th scope="col">Favoriate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <tr ng-repeat="item in cleanCollection" ">
+                <td>{{$index+1}}</td>
+                <td>{{item.dates.start.localDate}}</td>
+                <td>
+                <md-content layout-padding="" style="">
+                  <div>
+                    <md-tooltip md-direction="bottom">
+                    {{item.name}}
+                    </md-tooltip>
+                    <div style="cursor: pointer;outline: none;" ng-click="showDetails(item.id,$index)">{{item.name|textLengthSet:true:35:'...'}}</div>
+                  </div>
+                </md-content>
+              </td>
+                <td style="padding-bottom: 0px;">{{item.classifications[0].genre.name}}-{{item.classifications[0].segment.name}}</td>
+                <td>{{item._embedded.venues[0].name}}</td>
+                <td>
+                  <button type="button" ng-click="rubbish($index)" class="btn light" style="float: right;">
+                    <!-- <i class="material-icons">{{starStates[$index]}}</i> -->
+                    <i class="material-icons">delete</i>
+                  </button>
+                </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    <div ng-if = "cleanCollection=='NORECORDS'&&FavoritesDiv==''">
+      <div style="margin-top: 100px;" class="alert alert-warning" role="alert">
+        No records.
+      </div>
+    </div>
+    <div style="margin-top: 50px;">
+      <select class="custom-select col-sm-3" ng-model="sortingCategory" ng-change="sortEvents()" ng-show="showSortingBar">
+        <option value="default">Default</option>
+        <option value="eventName">Event Name</option>
+        <option value="time">Time</option>
+        <option value="artist">Artist</option>
+        <option value="type">Type</option>
+      </select>
+      <select class="custom-select col-sm-3" ng-model="sortingOrder" ng-disabled="sortingCategory=='default'" ng-change="sortEvents()" ng-show="showSortingBar">
+        <option value="acsending">Acsending</option>
+        <option value="descending">Descending</option>
+      </select>
+    </div>
+    <div ng-if="showDetail" ng-show="listButton.click" class="showDetail">
+      <div class="form-group row">
+        <button type="button" ng-click="listClick()" class="btn btn-light" style="border-color: grey">
+          <i class="material-icons">navigate_before</i> List
+        </button>
+        <div style="float: right; width: 80%;padding: 0px;" >
+            <button type="button" ng-click="starClick()"  class="btn light" style="float: right;border:grey;margin: auto;">
+              <i class="material-icons">{{starStatus}}</i>
+            </button>
+            <button type="button" class="btn btn-light" style="float: right;padding: 0px;padding-right: 10px;">
+              <a target="_blank" class="twitter-share-button" ng-href="https://twitter.com/intent/tweet?text=Check out {{detailInfo.name}} located at {{detailInfo._embedded.venues[0].name}} Website:{{detailInfo.url}}#CSCI571EventSearch"
+      data-size="large">
+              <img src="http://csci571.com/hw/hw8/Images/Twitter.png" style="width: 45px;height: 45px;">
+            </a>
+            </button>       
+        </div>
+      </div>
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-event-tab" data-toggle="tab" href="#nav-event" role="tab" aria-controls="nav-event" aria-selected="true">Event</a>
+          <a class="nav-item nav-link" ng-click="searchArtist()" id="nav-artist-tab" data-toggle="tab" href="#nav-artist" role="tab" aria-controls="nav-artist" aria-selected="false">Artisit/Team</a>
+          <a class="nav-item nav-link" ng-click="searchVenue()" id="nav-venue-tab" data-toggle="tab" href="#nav-venue" role="tab" aria-controls="nav-venue" aria-selected="false">Venue</a>
+          <a class="nav-item nav-link" ng-click="searchUpcoming()" id="nav-upcomingEvents-tab" data-toggle="tab" href="#nav-upcomingEvents" role="tab" aria-controls="nav-upcomingEvents" aria-selected="false">Upcoming Events</a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-event" role="tabpanel" aria-labelledby="nav-event-tab">
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th>Artist/Team(s)</th>
+                  <td ><span ng-repeat="team in teams">{{team.name}}-</span></td>
+              </tr>
+              <tr>
+                <th>Venue</th>
+                  <td >{{detailInfo._embedded.venues[0].name}}</td>
+              </tr>
+              <tr>
+                <th>Time</th>
+                  <td >{{formattedDate}}<span> </span>{{detailInfo.dates.start.localTime}}</td>
+              </tr>
+              <tr>
+                <th>Category</th>
+                  <td >{{detailInfo.classifications[0].genre.name}}|{{detailInfo.classifications[0].segment.name}}</td>
+              </tr>
+              <tr ng-if="detailInfo.priceRanges[0].min&&detailInfo.priceRanges[0].max">
+                <th>Price Range</th>
+                <td>${{detailInfo.priceRanges[0].min}}~${{detailInfo.priceRanges[0].max}}</td>
+              </tr>
+              <tr ng-if="detailInfo.priceRanges[0].min&&!detailInfo.priceRanges[0].max">
+                <th>Price Range</th>
+                <td>${{detailInfo.priceRanges[0].min}}</td>
+              </tr>
+              <tr ng-if="!detailInfo.priceRanges[0].min&&detailInfo.priceRanges[0].max">
+                <th>Price Range</th>
+                <td>${{detailInfo.priceRanges[0].m}}</td>
+              </tr>
+              <tr>
+                <th>Ticket Status</th>
+                  <td >{{detailInfo.dates.status.code}}</td>
+              </tr>
+              <tr>
+                <th>Buy Ticket At</th>
+                  <td ><a href={{detailInfo.url}} target="_blank">TicketMaster</a></td>
+              </tr>
+              <tr>
+                <th>Seat Map</th>
+                  <td ><a href="javascript" data-toggle="modal" data-target="#exampleModal">View Seat map Here</a></td>
+              </tr>   
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tab-pane fade show " id="nav-artist" role="tabpanel" aria-labelledby="nav-artist-tab">
+          <div ng-repeat = "artistInfo in artistDetail">
+            <table class="table table-striped" ng-if="artistInfo.name!=null">
+              <div style="text-align: center;width: 100%;font-weight: bold;">
+                  {{artistInfo.name}}
+              </div> 
+              <tbody>
+                <tr>
+                  <th>Name</th>
+                  <td>{{artistInfo.name}}</td>
+                </tr>
+                <tr>
+                  <th>Followers</th>
+                  <td>{{artistInfo.followers|numberFormat}}</td>
+                </tr>
+                <tr>
+                  <th>Popularity</th>
+                  <td><span>{{artistInfo.popularity}}</span>
+                    <div class="roundBar">
+                      <round-progress  max="100" current="90" radius="18" color="#53ad4d" stroke="3" clockwise="false"></round-progress>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Check At</th>
+                  <td><a href={{artistInfo.checkAt}}>Spotify</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div ng-repeat="artist2 in artistInfo2" ng-if="artistInfo2!='NORECORDS'" class="container">
+            <div style="text-align:center;font-weight:bold;">{{artist2.queries.request[0].searchTerms}}</div>
+            <div class="container"  style="float:left;">
+              <div class="row">
+                <div style="width: 33%">
+                  <a href={{artist2.items[0].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[0].image.thumbnailLink}}></a>
+                
+                  <a href={{artist2.items[3].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[3].image.thumbnailLink}}></a>
+                </div>
+                <div style="width: 33%">
+                  <a href={{artist2.items[1].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[1].image.thumbnailLink}}></a>
+                  <a href={{artist2.items[4].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[4].image.thumbnailLink}}></a>
+                  <a href={{artist2.items[6].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[6].image.thumbnailLink}}></a>
+                </div>
+                <div style="width: 33%">
+                  <a href={{artist2.items[2].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[2].image.thumbnailLink}}></a>
+                  <a href={{artist2.items[5].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[5].image.thumbnailLink}}></a>
+                  <a href={{artist2.items[7].link}} target="_blank"><img style="width: 90%;margin:10px" src={{artist2.items[7].image.thumbnailLink}}></a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div ng-if="artistInfo2=='NORECORDS'">
+            <div style="margin-top: 100px;" class="alert alert-warning" role="alert">
+              No records.
+            </div>
+          </div>
+        </div>
+       
+        <div class="tab-pane fade show " id="nav-venue" role="tabpanel" aria-labelledby="nav-venue-tab">
+          <div ng-if="venueInfo._embedded">
+            <div class="venueHeading">{{venueInfo._embedded.venues[0].name}}</div>
+            <table class="table table-striped">
+              <thead></thead>
+              <tbody>
+                <tr ng-if="venueInfo._embedded.venues[0].address.line1">
+                  <th>Venue</th>
+                  <td>{{venueInfo._embedded.venues[0].address.line1}}</td>
+                </tr>
+                <tr ng-if="venueInfo._embedded.venues[0]">
+                  <th>City</th>
+                  <td>{{venueInfo._embedded.venues[0].city.name}},{{venueInfo._embedded.venues[0].state.name}}</td>
+                </tr>
+                <tr ng-if="venueInfo._embedded.venues[0].boxOfficeInfo.phoneNumberDetail">
+                  <th>Phone Number</th>
+                    <td>{{venueInfo._embedded.venues[0].boxOfficeInfo.phoneNumberDetail}}</td>
+                </tr ng-if="venueInfo._embedded.venues[0].boxOfficeInfo.openHoursDetail">
+                <tr ng-if="venueInfo._embedded.venues[0].boxOfficeInfo.openHoursDetail">
+                  <th>Open Hours</th>
+                    <td>{{venueInfo._embedded.venues[0].boxOfficeInfo.openHoursDetail}}</td>
+                </tr>
+                <tr ng-if="venueInfo._embedded.venues[0].generalInfo.generalRule">
+                  <th>General Rule</th>
+                    <td>{{venueInfo._embedded.venues[0].generalInfo.generalRule}}</td>
+                </tr>
+                <tr ng-if="venueInfo._embedded.venues[0].generalInfo.childRule">
+                  <th>Child Rule</th>
+                    <td>{{venueInfo._embedded.venues[0].generalInfo.childRule}}</td>
+                </tr>  
+              </tbody>
+            </table>
+          </div>
+          <div id="map"></div>
+          <div ng-if="!venueInfo._embedded">
+            <div style="margin-top: 100px;" class="alert alert-warning" role="alert">
+              No records.
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade show " id="nav-upcomingEvents" role="tabpanel" aria-labelledby="nav-upcomingEvents-tab">
+          <div class="form-group row">
+            
+          </div>
+          <div ng-if="showUpcomingProgressBar">
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">         
+              </div>
+            </div>
+          </div>
+          <div ng-if="totalEvents!='NORECORDS'">
+            <div ng-repeat="event in initialEvents">
+              <div class="card" style="width: 100%;">
+                <div class="card-body">
+
+                  <a href={{event.uri}} target="_blank" class="card-link">{{event.displayName}}</a>
+                  <div class="card-text"><span style="color: orange">{{event.performance[0].displayName}}</span><span> {{event.start.date}} {{event.start.time}}</span></div>
+                  <div class="card-text">{{event.type}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="centerDiv">
+              <button type="button" class="btn btn-primary " ng-click="showMoreEvents()" ng-show="moreButton.show">Show More
+              </button>
+            </div>
+            <div id="remainingEvents"  ng-if="remainingEventsShow" class="slide-down" ng-hide="slide-up">
+              <div  ng-repeat="event in remainingEvents">
+                <div class="card" style="width: 100%;">
+                  <div class="card-body">
+                    <a href={{event.uri}} class="card-link">{{event.displayName}}</a>
+                    <div class="card-text"><span>{{event.performance[0].displayname}}</span><span>  {{event.start.date}} {{event.start.time}}</span></div>
+                    <div class="card-text">{{event.type}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="centerDiv">
+              <button type="button" class="btn btn-primary " ng-click="showLessEvents()"  ng-show="lessButton.show">Show Less</button>
+            </div>
+          </div>
+          <div ng-if="totalEvents=='NORECORDS'">
+            <div style="margin-top: 100px;" class="alert alert-warning" role="alert">
+              No records.
+            </div>
+          </div>
+      </div>
+    </div>
+    <div>
+      
+    </div>
+    <!--Seat Map Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">View Seat Map</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <a href={{detailInfo.seatmap.staticUrl}} target="_blank">
+              <img src={{detailInfo.seatmap.staticUrl}} class="img-fluid" alt="Seat Map">
+            </a>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+
+
+<script>
+var cities = [
+              {
+                  lat : 23.200000,
+                  long : 79.225487
+              }
+          ];
+  //googleMap
+var app = angular.module('myApp', ['ngMaterial', 'ngMessages', 'material.svgAssetsCache','ngAnimate','angular-svg-round-progressbar']);
+
+app.filter('textLengthSet', function() {
+    return function(value, wordwise, max, tail) {
+        if (!value) return '';
+
+        max = parseInt(max, 10);
+        if (!max) return value;
+        if (value.length <= max) return value;
+
+        value = value.substr(0, max);
+        if (wordwise) {
+        var lastspace = value.lastIndexOf(' ');
+        if (lastspace != -1) {
+        value = value.substr(0, lastspace);
+        }
+        }
+
+    return value + (tail || ' …');
+    };
+});
+
+app.filter('numberFormat',function(){
+  return function(num){
+    if(num.size<3){
+      return num;
+    }
+    var formatedNumber=num.toString();
+    var size = formatedNumber.length;
+    for( var i =1; i*3<size;i++) {
+      formatedNumber = formatedNumber.substring(0,size-3*i)+","+formatedNumber.substring(size-3*i);
+    }
+    return formatedNumber;
+  };
+});
+
+
+app.controller('formCtrl', function($scope,$rootScope,$http) {
+     
+  $scope.autocomplete=function(keyword){
+    $scope.type = typeof($scope.form.keyword);
+    if($scope.type!="undefined"){
+      $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/autocomplete",{params:{"keyword":keyword}}).then(function(response){
+        var data = response.data;
+        if(data._embedded.attractions!=undefined){
+          $scope.filterData = data._embedded.attractions;
+        }
+        else{
+          $scope.filterData = null;
+        }
+      })
+    }
+    else{
+      $scope.filterData = null;
+    }
+  }
+  $scope.test=function(){
+    $scope.testtest=1;
+  }
+  $scope.fillTextbox = function(data){
+    $scope.test = "123123";
+    
+    $scope.form.keyword = data.name;
+    $scope.filterData = null;
+  }
+  $scope.hide = function(){
+    $scope.filterData = null;
+  }
+  //localStorage
+
+  if (typeof(Storage) !== "undefined") {
+    // Store
+    if(localStorage.getItem("collection")!=null){
+      $scope.testStorage = 2;
+      $scope.collection = JSON.parse(localStorage.getItem("collection"));
+     }
+     else{
+      $scope.testStorage = 1;
+      $scope.collection = [];
+     }
+    if(localStorage.getItem("collectionOrder")!=null){
+      $scope.collectionOrder =JSON.parse(localStorage.getItem("collectionOrder"));
+     }
+     else{
+      $scope.collectionOrder = [];
+     }
+    if(localStorage.getItem("starStates")!=null){
+      $scope.starStates = JSON.parse(localStorage.getItem("starStates"));
+     }
+     else{
+      $scope.starStates = {};
+     }
+     if(localStorage.getItem("collectionOrderIndex")!=null){
+      $scope.collectionOrderIndex = JSON.parse(localStorage.getItem("collectionOrderIndex"));
+     }
+     else{
+      $scope.collectionOrderIndex = 0;
+     }
+     if(localStorage.getItem("collectionNumber")!=null){
+      $scope.collectionNumber = JSON.parse(localStorage.getItem("collectionNumber"));
+     }
+     else{
+      $scope.collectionNumber = 0;
+     }
+  }
+  $scope.googleMapsUrl="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7tqbcASHS3luuZS5D3rH0sR6owqPtofU";
+
+  $scope.keywordValidation=false;
+  $scope.keywordIsActivated = function(){
+    $scope.keywordValidation = true;
+    $scope.filterData = null;
+    $scope.initclick = true;
+  }
+  $scope.filterData={"1":1,"2":2,"3":3,"4":4,"5":5};
+  $scope.initclick = false;
+  $scope.form = {};
+  $scope.form.category = "All";
+  $scope.form.distance = "10";
+  $scope.form.unit ="miles";
+  $scope.form.location = "currentLocation";
+  $scope.ResultsDiv = "";
+  $scope.FavoritesDiv = "unchosenDiv";
+  $scope.searchResult="";
+  $scope.showDetail=false;
+  $scope.showTable=false;
+  $scope.listButton={click:false};
+  $scope.starStatus = "star_border";
+  $scope.starStates = {};
+  // $scope.collection = [];
+  // $scope.collectionNumber = 0;
+  $scope.showCollection = false;
+  // $scope.collectionOrder = [];
+  // $scope.collectionOrderIndex = 0;
+  // $scope.sortingOrder = "acsending";
+  // $scope.sortingCategory = "default";
+  $scope.sortingOrder = "acsending";
+  $scope.sortingCategory = "default";
+  // $rootScope.sortingOrder = $scope.sortingOrder;
+  // $rootScope.sortingCategory = $scope.sortingCategory;
+  $scope.listClick = function(){
+    $scope.listButton.click = false;
+    $scope.showDetail=false;
+    $scope.showTable = true;
+  }
+  $scope.detailClick = function(){
+    $scope.showDetail=true;
+    $scope.listButton.click = true;
+    $scope.showTable = false;
+  }
+  $scope.starClick = function(){
+    if($scope.starStatus=="star_border"){
+      $scope.collection[$scope.selectedEventIndex] = $scope.searchResult[$scope.selectedEventIndex];
+      $scope.collectionOrder[$scope.collectionOrderIndex]=$scope.selectedEventIndex;
+      $scope.collectionOrderIndex++;
+      $scope.starStates[$scope.selectedEventIndex]="star";
+      $scope.starStatus = "star";
+    }
+    else{
+      $scope.collection[$scope.selectedEventIndex] = "";
+      $scope.starStates[$scope.selectedIndex]="star_border";
+      $scope.starStatus = "star_border";
+      for(var i =0;i<$scope.collectionOrderIndex;i++){
+        if($scope.collectionOrder[i]==$scope.selectedEventIndex){
+          delete($scope.collectionOrder[i]);
+          // $scope.collectionOrder[i]=null;
+        }
+      }
+    }
+    localStorage.setItem("collection",JSON.stringify($scope.collection));
+      localStorage.setItem("collectionOrder",JSON.stringify($scope.collectionOrder));
+      localStorage.setItem("collectionOrderIndex",JSON.stringify($scope.collectionOrderIndex));
+      localStorage.setItem("starStates",JSON.stringify($scope.starStates));
+      localStorage.setItem("collectionNumber",JSON.stringify($scope.collectionNumber));
+  }
+  $scope.collect =function(selectedIndex){
+    $scope.selectedIndex = selectedIndex;
+    if($scope.starStates[selectedIndex]=="star_border"){
+      $scope.collection[selectedIndex] = $scope.searchResult[selectedIndex];
+      $scope.collectionOrder[$scope.collectionOrderIndex]=selectedIndex;
+      $scope.collectionOrderIndex++;
+      //$scope.collectionNumber ++;
+      $scope.starStates[selectedIndex] = "star";
+    }
+    else{
+      $scope.collection[selectedIndex] = "";
+      for(var i =0;i<$scope.collectionOrderIndex;i++){
+        if($scope.collectionOrder[i]==selectedIndex){
+          delete($scope.collectionOrder[i]);
+          // $scope.collectionOrder[i]=null;
+        }
+      }
+      //$scope.collectionNumber --;
+      $scope.starStates[selectedIndex] = "star_border";
+    }
+    localStorage.setItem("collection",JSON.stringify($scope.collection));
+    localStorage.setItem("collectionOrder",JSON.stringify($scope.collectionOrder));
+    localStorage.setItem("collectionOrderIndex",JSON.stringify($scope.collectionOrderIndex));
+    localStorage.setItem("starStates",JSON.stringify($scope.starStates));
+    localStorage.setItem("collectionNumber",JSON.stringify($scope.collectionNumber));
+  }
+  $scope.rubbish = function(selectedIndex){
+    $scope.cleanCollectionOrder = [];
+    var j = 0;
+    for(var i = 0;i<$scope.collectionOrder.length;i++){
+      if($scope.collectionOrder[i]!=null){
+        $scope.cleanCollectionOrder[j]=$scope.collectionOrder[i];
+        j++;
+      }
+    }
+
+    $scope.test = selectedIndex;
+    $scope.collection[$scope.cleanCollectionOrder[selectedIndex]] = "";
+    $scope.starStates[$scope.cleanCollectionOrder[selectedIndex]] = "star_border";
+
+    for(var i =0;i<$scope.collectionOrderIndex;i++){
+        if($scope.collectionOrder[i]==$scope.cleanCollectionOrder[selectedIndex]){
+          delete($scope.collectionOrder[i]);
+        }
+      }
+    //function to sort out null item
+    $scope.cleanCollection = [];
+    j = 0;
+    for(var i = 0;i<$scope.collectionOrder.length;i++){
+      if($scope.collection[i]!=""){
+        $scope.cleanCollection[j]=$scope.collection[$scope.collectionOrder[i]];
+        j++;
+        $scope.j = j;
+      }
+    }
+    if (j==0) {
+      $scope.cleanCollection="NORECORDS"
+    }
+    $scope.showCollections();
+
+    localStorage.setItem("collection",JSON.stringify($scope.collection));
+    localStorage.setItem("collectionOrder",JSON.stringify($scope.collectionOrder));
+    localStorage.setItem("collectionOrderIndex",JSON.stringify($scope.collectionOrderIndex));
+    localStorage.setItem("starStates",JSON.stringify($scope.starStates));
+    localStorage.setItem("collectionNumber",JSON.stringify($scope.collectionNumber));
+  }
+  $scope.showSearchResults = function(){
+    $scope.ResultsDiv = "";
+    $scope.FavoritesDiv = "unchosenDiv";
+    $scope.showCollection = false;
+    $scope.showTable =true;
+    $scope.showDetail = false;
+  }
+
+  $scope.showCollections = function(){
+    $scope.showSortingBar = false;
+    $scope.ResultsDiv = "unchosenDiv";
+    $scope.FavoritesDiv = "";
+    $scope.showCollection = true;
+    $scope.showTable =false;
+    $scope.showDetail = false;
+    //function to sort out null item
+    $scope.cleanCollection = {};
+    var j = 0;
+    for(var i = 0;i<$scope.collectionOrder.length;i++){
+      if($scope.collectionOrder[i]!=null){
+        $scope.cleanCollection[j]=$scope.collection[$scope.collectionOrder[i]];
+        j++;
+        $scope.j = j;
+      }
+    }
+    if (j==0) {
+      $scope.cleanCollection="NORECORDS"
+    }
+  }
+  $scope.getLocation = function(){
+    $http.get("http://ip-api.com/json")
+      .then(function(response) {
+        $scope.currentLon = response.data.lon;
+        $scope.currentLat = response.data.lat;
+      });
+  }
+  $scope.search = function(){
+    $scope.showProgressBar = true;
+    // if($scope.form.location=="currentLocation"){
+    //   lon = $scope.currentLon;
+    //   lat = $scope.currentLat;
+    // }
+    // else{
+    //   $http({method:'get'},url:'http://yunzehw8backend.us-east-2.elasticbeanstalk.com/geocoding&specifiedLocation='+$scope.form.specifiedLocation).then(function(response){
+    //     lon = response.data.location.lon;
+    //     lat = response.data.location.lat;
+    //   })
+    // }
+    $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/search",{params:{"formCategory":$scope.form.category,"formDistance":$scope.form.distance,"formUnit":$scope.form.unit,"formLocation":$scope.form.location,"formSpecifiedLocation":$scope.form.specifiedLocation,"formKeyword":$scope.form.keyword,"currentLon":$scope.currentLon,"currentLat":$scope.currentLat}})
+
+    // $http({method: 'post', url: 'http://yunzehw8backend.us-east-2.elasticbeanstalk.com/search',data:{form:$scope.form,currentLon:$scope.currentLon,currentLat:$scope.currentLat}
+    // })
+    .then(function(response) {  
+      $scope.index = 1;
+      if(response.data._embedded!=null){
+        $scope.searchResult = response.data._embedded.events;
+        $scope.searchResult.sort(function(x,y){return (x.dates.start.localDate < y.dates.start.localDate) ? -1 : 1});
+      }
+      else{
+        $scope.searchResult ="NORESULT";
+      }
+      for(var i =0;i<$scope.searchResult.length;i++){
+        $scope.starStates[i] = "star_border";
+      }
+      $scope.showProgressBar = false;
+      $scope.showTable = true;
+      $scope.showCollection = false;
+      $scope.showDetail = false;
+    })
+  }
+  $scope.reset = function() {
+    $scope.cardForm.keyword.$touched=false;
+    $scope.form.keyword = "";
+    $scope.form.category = "All";
+    $scope.form.distance = "10";
+    $scope.form.unit ="miles";
+    $scope.form.location = "currentLocation";
+  
+    $scope.ResultsDiv = "";
+    $scope.FavoritesDiv = "unchosenDiv";
+    $scope.searchResult="";
+    $scope.showDetail=false;
+    $scope.showTable=false;
+    $scope.listButton={click:false};
+    $scope.starStatus = "star_border";
+    //$scope.starStates = {};
+    //$scope.collection = [];
+    //$scope.collectionNumber = 0;
+    $scope.showCollection = false;
+    //$scope.collectionOrder = [];
+    //$scope.collectionOrderIndex = 0;
+    // $scope.sortingOrder = "acsending";
+    // $scope.sortingCategory = "default";
+    $scope.sortingOrder = "acsending";
+    $scope.sortingCategory = "default";
+  };
+  $scope.showDetails = function(eventId,selectedEventIndex,eventName){
+    $scope.showSortingBar = false;
+    $scope.detailHeading = eventName;
+    if($scope.collection[selectedEventIndex]==null||$scope.collection[selectedEventIndex]==""){
+      $scope.starStatus = "star_border"
+    }
+    else{
+      $scope.starStatus = "star";
+    }
+    $scope.selectedEventIndex = selectedEventIndex;
+    $scope.listButton.click = true;
+    $scope.eventId = eventId;
+    $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/showDetails",{params:{"eventId":$scope.eventId}})
+    .then(function(response){
+      $scope.showDetail = true;
+      $scope.showCollection = false;
+      $scope.showTable = false;
+      $scope.detailInfo = response.data;
+      $scope.formattedDate =$scope.formatDate($scope.detailInfo.dates.start.localDate);
+      $scope.teams = $scope.detailInfo._embedded.attractions;
+    })
+  }
+
+  $scope.formatDate = function(originalDate){
+      var date = originalDate.split("-");
+      var month = date[1];
+      if(month.charAt(0)=='0'){
+        month = month.substring(1);
+      }
+      var monthMap = ['','Jan','Feb','Mar','Apri','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var formattedMonth = monthMap[month];
+
+      var formattedString = formattedMonth+ " "+date[2]+","+date[0];
+      return formattedString;
+    }
+  $scope.searchArtist =async function() { 
+    $scope.showSortingBar = false;
+
+    //section 1: 
+    var teamLength = $scope.teams.length;
+    $scope.artistNames=[];
+    $scope.artistDetail={};
+    
+    for(var i =0;i<teamLength;i++){
+      $scope.artistNames[i]=$scope.teams[i].name;
+      await $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/showArtistInfo1",{params:{artistName:$scope.artistNames[i]}})
+      .then(function(response){
+      $scope.artistDetail[i] = response.data; 
+      })
+    }
+
+    //section 2:
+    $scope.artistInfo2={};
+    for(var i =0;i<$scope.artistNames.length;i++){
+      await $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/showArtistInfo2",{params:{artistNames:$scope.artistNames[i]}})
+      .then(function(response){
+      $scope.artistInfo2[i] = response.data;
+    })
+    }
+    if($scope.artistInfo2[0]==undefined){
+        $scope.artistInfo2="NORECORDS";
+      }
+  } 
+
+
+  $scope.searchVenue = function(){
+    $scope.showSortingBar = false;
+    $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/showVenueInfo",{params:{venueName:$scope.detailInfo._embedded.venues[0].name}})
+      .then(function(response){
+      $scope.venueInfo = response.data;
+          $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/geocode",{params:{venueName:$scope.venueInfo._embedded.venues[0].name}})
+      .then(function(response){
+        $scope.mapInfo = response.data; 
+        var mapOptions = {
+            zoom: 13,
+            center: new google.maps.LatLng($scope.mapInfo.lat,$scope.mapInfo.lng),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+
+        $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+        $scope.markers = [];
+        
+        var infoWindow = new google.maps.InfoWindow();
+        
+        var createMarker = function (info){
+            $scope.testtest=1;
+            var marker = new google.maps.Marker({
+                map: $scope.map,
+                position: new google.maps.LatLng(info.lat, info.lng),
+                title: info.place
+            });
+            marker.content = '<div class="infoWindowContent">' + info.desc + '<br />' + info.lat + ' E,' + info.long +  ' N, </div>';
+            
+            google.maps.event.addListener(marker, 'click', function(){
+                infoWindow.setContent('<h2>' + marker.title + '</h2>' + 
+                  marker.content);
+                infoWindow.open($scope.map, marker);
+            });
+            
+            $scope.markers.push(marker);
+            
+        }  
+        createMarker($scope.mapInfo);
+        $scope.openInfoWindow = function(e, selectedMarker){
+            e.preventDefault();
+            google.maps.event.trigger(selectedMarker, 'click');
+        }
+    }); 
+    });
+  }
+
+  $scope.searchUpcoming = function(){
+    $scope.totalEvents="";
+    $scope.showSortingBar = true;
+    $scope.showUpcomingProgressBar = true;
+    $http.get("http://yunzehw8backend.us-east-2.elasticbeanstalk.com/showUpcomingEvents",{params:{venueName:$scope.detailInfo._embedded.venues[0].name}}).
+    then(function(response){
+      $scope.upcomingEvents = response.data;
+      if($scope.upcomingEvents=="No data"){
+        $scope.totalEvents="NORECORDS";
+        $scope.showSortingBar = false;
+      }
+      else{
+        $scope.totalEvents = $scope.upcomingEvents.resultsPage.results.event;
+        $scope.defaultTotalEvents = $scope.totalEvents;
+        $scope.eventlength = $scope.totalEvents.length;
+        $scope.initialNumber = $scope.eventlength>5?5:$scope.eventlength;
+        $scope.initialEvents = $scope.totalEvents.slice(0,$scope.initialNumber);
+        $scope.moreButton = {show:true};
+        $scope.lessButton = {show:false};
+      }
+    })
+    $scope.showUpcomingProgressBar = false;
+  }
+  $scope.showMoreEvents = function(){
+    if($scope.eventlength>5){
+      $scope.remainingEvents = $scope.totalEvents.slice($scope.initialNumber);
+    }
+    $scope.remainingEventsShow = true;
+    $scope.moreButton = {show:false};
+    $scope.lessButton = {show:true};
+  }
+  $scope.showLessEvents = function(){
+    $scope.remainingEventsShow = false;
+    // $scope.remainingEvents ={};
+    $scope.moreButton = {show:true};
+    $scope.lessButton = {show:false};
+  } 
+  $scope.sortEvents = function(){
+    if($scope.sortingCategory=="default"){
+      $scope.initialEvents = $scope.defaultTotalEvents.slice(0,$scope.initialNumber);
+      $scope.remainingEvents = $scope.defaultTotalEvents.slice($scope.initialNumber);
+      
+    }
+    else if($scope.sortingCategory=="eventName"){
+      if($scope.sortingOrder=="acsending"){
+        $scope.totalEvents.sort(function(x,y){return (x.displayName < y.displayName) ? -1 : 1});
+      }
+      else{
+        $scope.totalEvents.sort(function(x,y){return (x.displayName < y.displayName) ? 1 : -1});
+      }
+      $scope.initialEvents = $scope.totalEvents.slice(0,$scope.initialNumber);
+      $scope.remainingEvents = $scope.totalEvents.slice($scope.initialNumber);
+    }
+    else if($scope.sortingCategory=="time"){
+      if($scope.sortingOrder=="acsending"){
+        $scope.totalEvents.sort(function(x,y){return (x.start.date < y.start.date||(x.start.date == y.start.date&&x.start.time < y.start.time)) ? -1 : 1});
+      }
+      else{
+        $scope.totalEvents.sort(function(x,y){return (x.start.date < y.start.date||(x.start.date == y.start.date&&x.start.time < y.start.time)) ? 1 : -1});
+      }
+      $scope.initialEvents = $scope.totalEvents.slice(0,$scope.initialNumber);
+      $scope.remainingEvents = $scope.totalEvents.slice($scope.initialNumber);
+
+    }
+    else if($scope.sortingCategory=="artist"){
+      if($scope.sortingOrder=="acsending"){
+        $scope.totalEvents.sort(function(x,y){return (x.performance[0].displayName < y.performance[0].displayName) ? -1 : 1});
+      }
+      else{
+        $scope.totalEvents.sort(function(x,y){return (x.performance[0].displayName < y.performance[0].displayName) ? 1 : -1});
+      }
+      $scope.initialEvents = $scope.totalEvents.slice(0,$scope.initialNumber);
+      $scope.remainingEvents = $scope.totalEvents.slice($scope.initialNumber);
+    }
+    else if($scope.sortingCategory=="type"){
+      if($scope.sortingOrder=="acsending"){
+        $scope.totalEvents.sort(function(x,y){return (x.type < y.type) ? -1 : 1});
+      }
+      else{
+        $scope.totalEvents.sort(function(x,y){return (x.type < y.type) ? 1 : -1});
+      }
+            $scope.initialEvents = $scope.totalEvents.slice(0,$scope.initialNumber);
+      $scope.remainingEvents = $scope.totalEvents.slice($scope.initialNumber);
+    }
+
+    
+
+  }
+
+});
+</script>
+
+
+	
+</body>
+</html>

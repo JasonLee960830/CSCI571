@@ -1,0 +1,363 @@
+html{
+    width:-moz-fit-content;
+    margin:auto;
+    
+}
+body{
+    width:1151px;
+    margin:0px;
+}
+ul {
+    list-style-type: none;
+    width: 1001px;
+    height: 52px;
+    margin:48px 50px 15px 50px;
+    padding:0;
+  
+    
+}
+li{
+    display: inline;
+}
+li a{
+    color: rgb(203,203,203);
+	text-decoration: none;
+}
+ li a .menu{
+    color: red;
+}
+li a:hover{
+    color: black;
+}
+.menu {
+    float: left;
+    font-size: 15px;
+    margin: 0 20px;
+    
+}
+
+
+.services{
+	float: right;
+    font-size: 13px;
+    margin: 0 18px;
+}
+.projects{
+	float: right;
+    font-size: 13px;
+    margin: 0 18px;
+}
+.about{
+	float: right;
+    font-size: 13px;
+    margin: 0 18px ;
+}
+
+
+.cover{
+     width: 1151px;
+     height: 670px;
+}
+.changebright{
+    width: 1151px;
+    height: 670px;
+    background-image:url(http://csci571.com/hw/hw3/images/lawyer.jpg);
+    background-size:108% 100%;
+    background-attachment: scroll;
+    background-position: 40% -50%;
+    background-repeat: no-repeat;
+    filter: brightness(75%);
+
+}
+.signup{
+    background-color: rgb(23,59,91);
+    padding-top: 8px;
+    top: -545px;
+    left: 76px;
+    position:relative;
+    width: 351px;
+    height: 403px;
+}
+.signup div{
+    text-transform: uppercase;
+    color: white;
+}
+.signup .medium{
+    margin:50px 0 0px 42px;
+    font-size: 12px;
+}
+.signup .big{
+    margin:3px 0 25px 42px;
+    font-size: 38px;
+    font-family: 'Karla', sans-serif;
+    line-height: 32px;
+}
+.signup .small{
+    margin: 10px 0 0 42px;
+    color: rgb(243,222,64);
+    font-size: 11px;
+    font-style: oblique;
+    text-transform: none;
+}
+
+input{
+    width: 251px;
+    height: 22px;
+    padding:10px 10px;
+    margin: 25px 0 0 41px;
+    background-color: rgb(229,234,237);
+    padding:10px;
+    font-size:100%;
+    border: none;
+    
+}
+button{
+    background-color: rgb(247,222,61);
+    color: black;
+    font-size: 12px;
+    font-family:'Ubuntu Condensed', sans-serif;
+    /*! margin: 25px 0 0 41px; */
+    width: 146px;
+    height: 40px;
+    position: relative;
+    top: 25px;
+    left:40px;
+    border: none;
+    padding: 0 0 0 0;
+    letter-spacing: 1px;
+}
+button:hover{
+    background-color: black;
+    color: white;
+}
+
+.features{
+    width: 1151px;
+    height:258px;
+    margin: 115px 0 0 45px;
+}
+.features div{
+    display: inline-block;
+    width: 294px;
+    height: 108px;
+    margin:0px 30px 0px 30px;
+    font-size: 12.4px;
+    line-height: 20px;
+    color:grey;
+}
+.features h4{
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: normal;
+    color:black;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.quotes{
+    width: 1151px;
+    height:344px;
+    background-color: rgb(244,244,244);
+    margin: 0px 0 0 0;
+}
+.quote{
+    text-transform: uppercase;
+    font-size: 18px;
+    top: 40%;
+    left:20%;
+    position: relative;
+    font-family: 'Karla', sans-serif;
+
+}
+.author{
+    text-transform: capitalize;
+    font-size: 11px;
+    top: 40%;
+    left:44%;
+    position: relative;
+    color:grey;
+}
+.author span{
+    color:black;
+    font-weight: bold;
+}
+
+.prices{
+    width: 1151px;
+    height: 762px;
+}
+.pricebackground{
+    width: 1151px;
+    height: 762px;
+    background-image: url(http://csci571.com/hw/hw3/images/glasses.png);
+    filter: grayscale(100%);
+    opacity: 0.35;
+    background-position: -400px,-200px;
+    background-size: 150%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: absolute;
+    z-index: -10;
+}
+.prices .topic{
+
+     text-transform: uppercase;
+    font-size: 18px;
+    top: 60px;
+    left:50%;
+    position: relative;
+}
+.prices .description{
+
+   text-transform: uppercase;
+    /*! font-size: 13px; */
+    top: 75px;
+    left:44.5%;
+    position: relative;
+    font-size: 13px;
+    color: grey;
+}
+.plan{
+    width: 1151px;
+    height: 350px;
+    margin: 0 55px;
+}
+.subplanbackground{
+    width: 306px;
+    height: 489px;
+    background-image: url(http://csci571.com/hw/hw3/images/grid.png);
+    background-size: 150%;
+    opacity: 0.15;
+    position: absolute;
+
+}
+.subplan{
+    position: relative;
+    background-color: white;
+    float: left;
+    width: 306px;
+    height: 489px;
+    margin: 160px 20px;
+}
+.subplan .name{
+    text-transform: uppercase;
+    text-align: center;
+    margin: 50px 0  30px 0;
+    height:26.5px;
+    font-size:16px;
+}
+.contents{
+    text-align: center;
+    color:grey;
+    font-size: 13px;
+    line-height: 20px;
+}
+.price{
+    text-align: center;
+    font-size: 25px;
+    position: relative;
+    top: 35px;
+}
+.period{
+    text-align: center;
+    font-size: 25px;
+    position: relative;
+    top:40px;
+}
+
+.buy{
+    background-color: rgb(23,59,91);
+    position: relative;
+    border: none;
+    width: 130px;
+    height:52px;
+    color: white;
+    margin:50px 0 0 45px;
+    letter-spacing: 2px;
+    font-size:15px;
+}
+
+.try{
+    width: 1151px;
+    height: 450px;
+    margin-top: px;
+}
+
+.inner{
+    width: 1150px;
+    background-image: url(http://csci571.com/hw/hw3/images/notebook.jpg);
+    height: 450px;
+     background-size: 100%;
+    background-attachment: scroll;
+    background-position: 5% 50%;
+     background-repeat: no-repeat;
+    filter: grayscale(10%);
+    
+}
+.addColor{
+    height:450px;
+    background-color: rgba(0,49,91,0.75);
+}
+.inner p{
+    position: relative;
+    top: 60px;
+    left:370px;
+    float: left;
+    font-size: 24px;
+    text-transform: uppercase;
+    color:white;
+}
+.inner .small{
+    position: relative;
+    top: 107px;
+    left: -22px;
+    float: left;
+    font-size: 12px;
+    text-transform: lowercase;
+    color:white;
+}
+.trybutton{
+    width: 166px;
+    height: 43px;
+    font-size: 14px;
+    text-transform: uppercase;
+    position: relative;
+    top: -205px;
+    left: 490px;
+    letter-spacing: 1.5px;
+}
+.footer{
+    width: 1151px;
+    height: 275px;
+    float: left;
+    background-color: rgb(30,37,47);
+}
+.footer .name{
+    width: 100%;
+    text-align: center;
+    position: relative;
+    top:80px;
+    font-size: 13px;
+    color: white;
+}
+.footer .address{
+   width: 100%;
+    text-align: center;
+    position: relative;
+    top:96px;
+    font-size: 11px;
+    color: rgb(140,140,140);
+}
+.iconset{
+    width: 100%;
+    margin: 0 410px;
+
+}
+.iconset img{
+    width: 29px;
+    height: 29px;
+    float: left;
+    position: relative;
+    top: 130px;
+    margin: 0 20px;
+
+}
